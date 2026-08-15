@@ -1,19 +1,19 @@
-
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OSRS PvM Random Race</title>
+  <title>Misfits PvM Random Race</title>
   <style>
     :root {
-      --bg-dark: #0f1115;
-      --card-bg: #1a1d24;
-      --accent: #ff9800;
-      --accent-hover: #e68a00;
+      --bg-dark: #120b1e;
+      --card-bg: #1e1330;
+      --banner-purple: #3b1459;
+      --accent: #a855f7;
+      --accent-hover: #9333ea;
       --text: #ffffff;
-      --text-muted: #a0a6b5;
-      --border: #2e3440;
+      --text-muted: #cbd5e1;
+      --border: #4c1d95;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,29 +26,128 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 0;
     }
 
-    h1 {
-      color: var(--accent);
-      margin-bottom: 5px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    p.subtitle {
-      color: var(--text-muted);
-      margin-bottom: 30px;
-      font-size: 0.95rem;
-    }
-
-    .main-container {
+    /* Misfits Banner Styling */
+    .banner-container {
+      width: 100%;
+      background-color: var(--banner-purple);
+      border-bottom: 4px solid #1a0b2e;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      position: relative;
       display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      height: 110px;
+      overflow: hidden;
+    }
+
+    /* Background diagonal lines pattern matching banner style */
+    .banner-container::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 15px,
+        transparent 15px,
+        transparent 30px
+      );
+      pointer-events: none;
+    }
+
+    .banner-side {
+      background: #d1d5db;
+      color: #000;
+      width: 130px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      clip-path: polygon(0 0, 100% 0, 75% 100%, 0% 100%);
+      z-index: 2;
+      text-align: center;
+      border-right: 3px solid #1a0b2e;
+    }
+
+    .banner-side.right {
+      background: #111827;
+      color: #fff;
+      clip-path: polygon(25% 0, 100% 0, 100% 100%, 0% 100%);
+      border-left: 3px solid #1a0b2e;
+    }
+
+    .banner-side .label { font-size: 0.75rem; text-transform: uppercase; color: #374151; }
+    .banner-side.right .label { color: #9ca3af; }
+    .banner-side .date { font-size: 1.15rem; line-height: 1.1; margin-top: 2px; }
+    .banner-side .time { font-size: 0.7rem; color: #4b5563; }
+    .banner-side.right .time { color: #d1d5db; }
+
+    .banner-center {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 2;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .banner-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #c084fc;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .banner-logo {
+      width: 85px;
+      height: 85px;
+      background: #1a0b2e;
+      border-radius: 50%;
+      border: 3px solid #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+      overflow: hidden;
+    }
+
+    .banner-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .rules-btn {
+      background: #4c1d95;
+      color: #fff;
+      border: 1px solid #7c3aed;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+      z-index: 2;
+    }
+    .rules-btn:hover { background: #6d28d9; }
+
+    /* CONTENT LAYOUT */
+    .content-wrapper {
       max-width: 1100px;
       width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      padding: 30px 20px;
+      justify-content: center;
     }
 
     /* WHEEL SECTION */
@@ -69,7 +168,6 @@
       margin: 20px 0;
     }
 
-    /* De Pijl boven het rad */
     .pointer {
       position: absolute;
       top: -15px;
@@ -79,7 +177,7 @@
       height: 0;
       border-left: 15px solid transparent;
       border-right: 15px solid transparent;
-      border-top: 25px solid #e74c3c;
+      border-top: 25px solid #ef4444;
       z-index: 10;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     }
@@ -97,7 +195,7 @@
       margin-top: 15px;
     }
 
-    select, button {
+    select, button.action-btn {
       padding: 12px;
       border-radius: 6px;
       border: 1px solid var(--border);
@@ -106,29 +204,29 @@
     }
 
     select {
-      background: #252932;
+      background: #2e1065;
       color: var(--text);
       flex: 1;
       cursor: pointer;
     }
 
-    button {
+    button.action-btn {
       background: var(--accent);
-      color: #000;
+      color: #fff;
       border: none;
       cursor: pointer;
       transition: background 0.2s, transform 0.1s;
       flex: 1;
     }
 
-    button:hover { background: var(--accent-hover); }
-    button:active { transform: scale(0.98); }
-    button:disabled { background: #555; cursor: not-allowed; }
+    button.action-btn:hover { background: var(--accent-hover); }
+    button.action-btn:active { transform: scale(0.98); }
+    button.action-btn:disabled { background: #374151; color: #9ca3af; cursor: not-allowed; }
 
     .result-box {
       margin-top: 20px;
       padding: 15px;
-      background: #252932;
+      background: #2e1065;
       border-radius: 8px;
       width: 100%;
       text-align: center;
@@ -150,10 +248,12 @@
 
     .tracker-title {
       font-size: 1.2rem;
-      color: var(--accent);
+      color: #c084fc;
       margin-bottom: 15px;
       border-bottom: 1px solid var(--border);
       padding-bottom: 10px;
+      text-transform: uppercase;
+      font-weight: bold;
     }
 
     .challenge-list {
@@ -163,7 +263,7 @@
     }
 
     .challenge-card {
-      background: #252932;
+      background: #2e1065;
       border-radius: 8px;
       padding: 12px 15px;
       display: flex;
@@ -177,17 +277,19 @@
       flex-direction: column;
     }
 
-    .challenge-num { font-size: 0.75rem; color: var(--accent); font-weight: bold; }
+    .challenge-num { font-size: 0.75rem; color: #c084fc; font-weight: bold; }
     .challenge-text { font-size: 1rem; font-weight: bold; }
+    
     .badge {
       font-size: 0.75rem;
       padding: 2px 6px;
       border-radius: 4px;
-      background: #333;
+      background: #4c1d95;
       color: #fff;
       display: inline-block;
       margin-top: 3px;
       width: fit-content;
+      text-transform: uppercase;
     }
 
     .action-btns {
@@ -201,32 +303,57 @@
       border-radius: 4px;
     }
 
-    .btn-unique { background: #27ae60; color: white; }
-    .btn-unique:hover { background: #219653; }
+    .btn-unique { background: #16a34a; color: white; border: none; cursor: pointer; font-weight: bold; }
+    .btn-unique:hover { background: #15803d; }
 
-    .badge-easy { background: #27ae60; }
-    .badge-medium { background: #2980b9; }
-    .badge-hard { background: #d35400; }
-    .badge-insane { background: #c0392b; }
-    .badge-long { background: #8e44ad; }
+    .badge-easy { background: #166534; }
+    .badge-medium { background: #1d4ed8; }
+    .badge-hard { background: #c2410c; }
+    .badge-insane { background: #b91c1c; }
+    .badge-long { background: #7e22ce; }
   </style>
 </head>
 <body>
 
-  <h1>OSRS PvM Random Race</h1>
-  <p class="subtitle">Spin het rad, voltooi 9 challenges of pak een Unique Drop!</p>
+  <!-- Misfits Banner Header -->
+  <header class="banner-container">
+    <div class="banner-side">
+      <span class="label">Start</span>
+      <span class="date">14<br>October</span>
+      <span class="time">00:00</span>
+    </div>
 
-  <div class="main-container">
+    <div class="banner-center">
+      <h1 class="banner-title">Misfits</h1>
+      <div class="banner-logo">
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
+          <circle cx="50" cy="50" r="45" fill="#1e1330" stroke="#f59e0b" stroke-width="4"/>
+          <text x="50" y="55" fill="#c084fc" font-size="14" font-weight="bold" text-anchor="middle">PVM RACE</text>
+        </svg>
+      </div>
+      <h1 class="banner-title">PvM Race</h1>
+    </div>
+
+    <button class="rules-btn" onclick="alert('Rules: Complete 9 PvM challenges. Each challenge rolls a Boss and a Kill Count. Hitting a Unique Drop instantly completes the challenge!')">Rules</button>
+
+    <div class="banner-side right">
+      <span class="label">End</span>
+      <span class="date">14<br>November</span>
+      <span class="time">00:00</span>
+    </div>
+  </header>
+
+  <div class="content-wrapper">
     
     <!-- WHEEL SECTION -->
     <div class="wheel-section">
       <div class="controls">
         <select id="tierSelect">
-          <option value="easy">Easy Tier</option>
-          <option value="medium">Medium Tier</option>
-          <option value="hard">Hard Tier</option>
-          <option value="insane">Insane Tier</option>
-          <option value="long">Long Tier</option>
+          <option value="easy">Easy Tier (100-600 KC)</option>
+          <option value="medium">Medium Tier (50-300 KC)</option>
+          <option value="hard">Hard Tier (25-150 KC)</option>
+          <option value="insane">Insane Tier (16-96 KC)</option>
+          <option value="long">Long Tier (5 KC)</option>
         </select>
       </div>
 
@@ -236,30 +363,30 @@
       </div>
 
       <div class="controls">
-        <button id="spinBossBtn">Spin Boss</button>
-        <button id="spinKcBtn" disabled>Spin KC</button>
+        <button id="spinBossBtn" class="action-btn">Spin Boss</button>
+        <button id="spinKcBtn" class="action-btn" disabled>Spin KC</button>
       </div>
 
       <div class="result-box">
-        <div class="result-title">Huidige Challenge</div>
-        <div class="result-value" id="resultText">Selecteer een tier & spin!</div>
+        <div class="result-title">Current Challenge</div>
+        <div class="result-value" id="resultText">Select a tier & spin!</div>
       </div>
       
-      <button id="acceptBtn" style="margin-top: 15px; width: 100%; display: none;">Voeg toe aan Challenge Lijst</button>
+      <button id="acceptBtn" class="action-btn" style="margin-top: 15px; width: 100%; display: none;">Add to Challenge List</button>
     </div>
 
     <!-- TRACKER SECTION -->
     <div class="tracker-section">
-      <div class="tracker-title">Team Progressie (9 Challenges)</div>
+      <div class="tracker-title">Team Progress (9 Challenges)</div>
       <div class="challenge-list" id="challengeList">
-        <!-- Dynamisch gevuld via JS -->
+        <!-- Dynamically filled via JS -->
       </div>
     </div>
 
   </div>
 
   <script>
-    // DATA CONFIGURATIE
+    // DATA CONFIGURATION
     const PVM_DATA = {
       easy: {
         label: 'Easy',
@@ -293,7 +420,7 @@
       }
     };
 
-    const colors = ['#2c3e50', '#34495e', '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#d35400', '#c0392b'];
+    const colors = ['#3b0764', '#4c1d95', '#581c87', '#6b21a8', '#7e22ce', '#9333ea', '#a855f7', '#c084fc'];
 
     // STATE
     let currentTier = 'easy';
@@ -302,7 +429,7 @@
     let selectedKC = null;
     let challenges = [];
     
-    // CANVAS & ANIMATIE STATE
+    // CANVAS & ANIMATION STATE
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
     let startAngle = 0;
@@ -311,7 +438,7 @@
     let spinTime = 0;
     let spinTimeTotal = 0;
     let isSpinning = false;
-    let wheelMode = 'boss'; // 'boss' of 'kc'
+    let wheelMode = 'boss'; // 'boss' or 'kc'
 
     // DOM ELEMENTS
     const tierSelect = document.getElementById('tierSelect');
@@ -321,7 +448,7 @@
     const resultText = document.getElementById('resultText');
     const challengeList = document.getElementById('challengeList');
 
-    // SETUP RAD
+    // DRAW WHEEL
     function drawWheel() {
       const numOptions = currentItems.length;
       const arc = Math.PI * 2 / numOptions;
@@ -329,9 +456,9 @@
       const textRadius = 105;
       const insideRadius = 30;
 
-      ctx.clearRect(0,0,320,320);
+      ctx.clearRect(0, 0, 320, 320);
 
-      for(let i = 0; i < numOptions; i++) {
+      for (let i = 0; i < numOptions; i++) {
         const angle = startAngle + i * arc;
         ctx.fillStyle = colors[i % colors.length];
 
@@ -355,7 +482,7 @@
 
     function rotateWheel() {
       spinTime += 30;
-      if(spinTime >= spinTimeTotal) {
+      if (spinTime >= spinTimeTotal) {
         stopRotateWheel();
         return;
       }
@@ -375,9 +502,9 @@
       const winningItem = currentItems[index];
       isSpinning = false;
 
-      if(wheelMode === 'boss') {
+      if (wheelMode === 'boss') {
         selectedBoss = winningItem;
-        resultText.innerText = `${selectedBoss} (Nu KC spinnen!)`;
+        resultText.innerText = `${selectedBoss} (Now spin KC!)`;
         spinKcBtn.disabled = false;
         spinBossBtn.disabled = true;
       } else {
@@ -389,17 +516,17 @@
     }
 
     function easeOut(t, b, c, d) {
-      const ts = (t/=d)*t;
-      const tc = ts*t;
-      return b+c*(tc + -3*ts + 3*t);
+      const ts = (t /= d) * t;
+      const tc = ts * t;
+      return b + c * (tc + -3 * ts + 3 * t);
     }
 
     function startSpin(mode) {
-      if(isSpinning) return;
+      if (isSpinning) return;
       isSpinning = true;
       wheelMode = mode;
       
-      if(mode === 'boss') {
+      if (mode === 'boss') {
         currentItems = PVM_DATA[currentTier].bosses;
         selectedBoss = null;
         selectedKC = null;
@@ -417,7 +544,7 @@
 
     // EVENT LISTENERS
     tierSelect.addEventListener('change', (e) => {
-      if(isSpinning) return;
+      if (isSpinning) return;
       currentTier = e.target.value;
       currentItems = PVM_DATA[currentTier].bosses;
       selectedBoss = null;
@@ -425,7 +552,7 @@
       spinBossBtn.disabled = false;
       spinKcBtn.disabled = true;
       acceptBtn.style.display = 'none';
-      resultText.innerText = `Tier: ${PVM_DATA[currentTier].label}. Spin de Boss!`;
+      resultText.innerText = `Tier: ${PVM_DATA[currentTier].label}. Spin the Boss!`;
       drawWheel();
     });
 
@@ -433,8 +560,8 @@
     spinKcBtn.addEventListener('click', () => startSpin('kc'));
 
     acceptBtn.addEventListener('click', () => {
-      if(challenges.length >= 9) {
-        alert('Alle 9 challenges zijn al toegevoegd!');
+      if (challenges.length >= 9) {
+        alert('All 9 challenges have already been added!');
         return;
       }
       challenges.push({
@@ -446,20 +573,19 @@
       });
       renderChallenges();
       
-      // Reset voor volgende spin
       spinBossBtn.disabled = false;
       acceptBtn.style.display = 'none';
-      resultText.innerText = "Challenge toegevoegd! Kies weer een tier.";
+      resultText.innerText = "Challenge added! Choose a tier to spin again.";
     });
 
     function renderChallenges() {
       challengeList.innerHTML = '';
-      for(let i = 0; i < 9; i++) {
+      for (let i = 0; i < 9; i++) {
         const item = challenges[i];
         const card = document.createElement('div');
         card.className = 'challenge-card';
 
-        if(item) {
+        if (item) {
           card.innerHTML = `
             <div class="challenge-info">
               <span class="challenge-num">CHALLENGE #${i+1}</span>
@@ -474,7 +600,7 @@
           card.innerHTML = `
             <div class="challenge-info">
               <span class="challenge-num">CHALLENGE #${i+1}</span>
-              <span class="challenge-text" style="color: var(--text-muted); font-weight: normal;">Nog niet gedraaid...</span>
+              <span class="challenge-text" style="color: var(--text-muted); font-weight: normal;">Not spun yet...</span>
             </div>
           `;
         }
@@ -483,7 +609,7 @@
     }
 
     window.completeChallenge = function(index) {
-      challenges[index].status = 'VOLTOOID! 🏆';
+      challenges[index].status = 'COMPLETED! 🏆';
       renderChallenges();
     };
 
