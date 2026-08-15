@@ -6,19 +6,18 @@
   <title>Misfits PvM Random Race</title>
   <style>
     :root {
-      /* Diep paarse achtergronden (geïnspireerd op de Misfits banner) */
+      /* Deep purple backgrounds */
       --bg-dark: #0a0512;
       --card-bg: #140924;
       --banner-purple: #230938;
       --border-purple: #3b1459;
       
-      /* Kleurenschema voor Wheel & Challenge Cards (Rijk, warm contrast) */
+      /* High-contrast colors for interactive elements */
       --card-inner-bg: #1d1b26;
       --accent-gold: #f59e0b;
       --accent-gold-hover: #d97706;
       --text: #ffffff;
       --text-muted: #a1a1aa;
-      --border-gold: #78350f;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,7 +33,7 @@
       padding: 0;
     }
 
-    /* Misfits Banner Header */
+    /* Header Banner */
     .banner-container {
       width: 100%;
       background-color: var(--banner-purple);
@@ -47,20 +46,6 @@
       padding: 0 20px;
       height: 110px;
       overflow: hidden;
-    }
-
-    .banner-container::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: repeating-linear-gradient(
-        -45deg,
-        rgba(0, 0, 0, 0.25),
-        rgba(0, 0, 0, 0.25) 15px,
-        transparent 15px,
-        transparent 30px
-      );
-      pointer-events: none;
     }
 
     .banner-side {
@@ -76,21 +61,13 @@
       clip-path: polygon(0 0, 100% 0, 75% 100%, 0% 100%);
       z-index: 2;
       text-align: center;
-      border-right: 3px solid #000;
     }
 
     .banner-side.right {
       background: #111827;
       color: #fff;
       clip-path: polygon(25% 0, 100% 0, 100% 100%, 0% 100%);
-      border-left: 3px solid #000;
     }
-
-    .banner-side .label { font-size: 0.75rem; text-transform: uppercase; color: #475569; }
-    .banner-side.right .label { color: #9ca3af; }
-    .banner-side .date { font-size: 1.15rem; line-height: 1.1; margin-top: 2px; }
-    .banner-side .time { font-size: 0.7rem; color: #64748b; }
-    .banner-side.right .time { color: #cbd5e1; }
 
     .banner-center {
       display: flex;
@@ -120,7 +97,6 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-      overflow: hidden;
     }
 
     .rules-btn {
@@ -137,7 +113,7 @@
     }
     .rules-btn:hover { background: var(--accent-gold-hover); transform: scale(1.03); }
 
-    /* CONTENT LAYOUT */
+    /* Layout Structure */
     .content-wrapper {
       max-width: 1100px;
       width: 100%;
@@ -148,7 +124,7 @@
       justify-content: center;
     }
 
-    /* WHEEL SECTION (PAARSE BACKDROP) */
+    /* Wheel Section */
     .wheel-section {
       background: var(--card-bg);
       border: 2px solid var(--border-purple);
@@ -163,7 +139,7 @@
 
     .wheel-wrapper {
       position: relative;
-      margin: 20px 0;
+      margin: 15px 0;
     }
 
     .pointer {
@@ -188,42 +164,30 @@
 
     .controls {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
-      margin-top: 15px;
-    }
-
-    select, button.action-btn {
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      font-weight: bold;
-    }
-
-    select {
-      background: var(--card-inner-bg);
-      color: #fff;
-      border: 1px solid #3f3f46;
-      flex: 1;
-      cursor: pointer;
+      margin-top: 10px;
     }
 
     button.action-btn {
+      padding: 12px 6px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
       background: var(--accent-gold);
       color: #000;
       border: none;
       cursor: pointer;
       transition: background 0.2s, transform 0.1s;
       flex: 1;
+      text-transform: uppercase;
     }
 
-    button.action-btn:hover { background: var(--accent-gold-hover); }
-    button.action-btn:active { transform: scale(0.98); }
+    button.action-btn:hover:not(:disabled) { background: var(--accent-gold-hover); }
     button.action-btn:disabled { background: #27272a; color: #71717a; cursor: not-allowed; }
 
-    /* CURRENT CHALLENGE RESULT BOX */
     .result-box {
-      margin-top: 20px;
+      margin-top: 15px;
       padding: 15px;
       background: var(--card-inner-bg);
       border-radius: 8px;
@@ -234,9 +198,9 @@
     }
 
     .result-title { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .result-value { font-size: 1.25rem; font-weight: bold; color: #ffffff; margin-top: 4px; }
+    .result-value { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-top: 4px; }
 
-    /* TRACKER SECTION (PAARSE BACKDROP) */
+    /* Tracker Section */
     .tracker-section {
       background: var(--card-bg);
       border: 2px solid var(--border-purple);
@@ -263,7 +227,6 @@
       gap: 10px;
     }
 
-    /* CONTRASTERENDE CHALLENGE CARDS */
     .challenge-card {
       background: var(--card-inner-bg);
       border-radius: 8px;
@@ -275,11 +238,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
 
-    .challenge-info {
-      display: flex;
-      flex-direction: column;
-    }
-
+    .challenge-info { display: flex; flex-direction: column; }
     .challenge-num { font-size: 0.75rem; color: var(--accent-gold); font-weight: bold; }
     .challenge-text { font-size: 1rem; font-weight: bold; color: #ffffff; }
     
@@ -293,31 +252,13 @@
       width: fit-content;
       text-transform: uppercase;
       font-weight: bold;
-      letter-spacing: 0.5px;
     }
 
-    .action-btns {
-      display: flex;
-      gap: 5px;
-    }
-
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      border-radius: 4px;
-    }
-
-    .btn-unique { 
-      background: #16a34a; 
-      color: white; 
-      border: none; 
-      cursor: pointer; 
-      font-weight: bold; 
-      transition: background 0.2s;
-    }
+    .btn-sm { padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; }
+    .btn-unique { background: #16a34a; color: white; border: none; cursor: pointer; font-weight: bold; }
     .btn-unique:hover { background: #15803d; }
 
-    /* CONTRASTERENDE TIER BADGES */
+    /* Tier Badges */
     .badge-easy { background: #15803d; }
     .badge-medium { background: #1d4ed8; }
     .badge-hard { background: #c2410c; }
@@ -327,12 +268,11 @@
 </head>
 <body>
 
-  <!-- Misfits Banner Header -->
   <header class="banner-container">
     <div class="banner-side">
-      <span class="label">Start</span>
-      <span class="date">14<br>October</span>
-      <span class="time">00:00</span>
+      <span>Start</span>
+      <span style="font-size: 1.15rem; line-height: 1.1;">14<br>October</span>
+      <span style="font-size: 0.7rem; color: #64748b;">00:00</span>
     </div>
 
     <div class="banner-center">
@@ -346,12 +286,12 @@
       <h1 class="banner-title">PvM Race</h1>
     </div>
 
-    <button class="rules-btn" onclick="alert('Rules: Complete 9 PvM challenges. Each challenge rolls a Boss and a Kill Count. Hitting a Unique Drop instantly completes the challenge!')">Rules</button>
+    <button class="rules-btn" onclick="alert('Rules: Spin Tier -> Spin Boss -> Spin KC! Complete 9 challenges. Getting a Unique Drop auto-completes the challenge!')">Rules</button>
 
     <div class="banner-side right">
-      <span class="label">End</span>
-      <span class="date">14<br>November</span>
-      <span class="time">00:00</span>
+      <span>End</span>
+      <span style="font-size: 1.15rem; line-height: 1.1;">14<br>November</span>
+      <span style="font-size: 0.7rem; color: #cbd5e1;">00:00</span>
     </div>
   </header>
 
@@ -359,15 +299,6 @@
     
     <!-- WHEEL SECTION -->
     <div class="wheel-section">
-      <div class="controls">
-        <select id="tierSelect">
-          <option value="easy">Easy Tier (100-600 KC)</option>
-          <option value="medium">Medium Tier (50-300 KC)</option>
-          <option value="hard">Hard Tier (25-150 KC)</option>
-          <option value="insane">Insane Tier (16-96 KC)</option>
-          <option value="long">Long Tier (5 KC)</option>
-        </select>
-      </div>
 
       <div class="wheel-wrapper">
         <div class="pointer"></div>
@@ -375,13 +306,14 @@
       </div>
 
       <div class="controls">
-        <button id="spinBossBtn" class="action-btn">Spin Boss</button>
-        <button id="spinKcBtn" class="action-btn" disabled>Spin KC</button>
+        <button id="spinTierBtn" class="action-btn">1. Spin Tier</button>
+        <button id="spinBossBtn" class="action-btn" disabled>2. Spin Boss</button>
+        <button id="spinKcBtn" class="action-btn" disabled>3. Spin KC</button>
       </div>
 
       <div class="result-box">
-        <div class="result-title">Current Challenge</div>
-        <div class="result-value" id="resultText">Select a tier & spin!</div>
+        <div class="result-title" id="modeTitle">Step 1: Spin Tier</div>
+        <div class="result-value" id="resultText">Click "1. Spin Tier" to start</div>
       </div>
       
       <button id="acceptBtn" class="action-btn" style="margin-top: 15px; width: 100%; display: none;">Add to Challenge List</button>
@@ -390,62 +322,56 @@
     <!-- TRACKER SECTION -->
     <div class="tracker-section">
       <div class="tracker-title">Team Progress (9 Challenges)</div>
-      <div class="challenge-list" id="challengeList">
-        <!-- Dynamically filled via JS -->
-      </div>
+      <div class="challenge-list" id="challengeList"></div>
     </div>
 
   </div>
 
   <script>
-    // DATA CONFIGURATION
+    const TIERS = ['Easy', 'Medium', 'Hard', 'Insane', 'Long'];
+
     const PVM_DATA = {
-      easy: {
-        label: 'Easy',
+      'Easy': {
         colorClass: 'badge-easy',
         kc: [100, 200, 300, 400, 500, 600],
         bosses: ['Kraken', 'Sire', 'Scurrius', 'DKings', 'Mole', 'Sarachnis', 'Moxy']
       },
-      medium: {
-        label: 'Medium',
+      'Medium': {
         colorClass: 'badge-medium',
         kc: [50, 100, 150, 200, 250, 300],
         bosses: ['Vorkath', 'Duke', 'KQ', "K'ril", 'Titans']
       },
-      hard: {
-        label: 'Hard',
+      'Hard': {
         colorClass: 'badge-hard',
         kc: [25, 50, 75, 100, 125, 150],
         bosses: ['Vardorvis', 'Muspah', 'Araxxor']
       },
-      insane: {
-        label: 'Insane',
+      'Insane': {
         colorClass: 'badge-insane',
         kc: [16, 32, 48, 64, 80, 96],
         bosses: ['Corp', 'Nightmare', 'Gauntlet']
       },
-      long: {
-        label: 'Long',
+      'Long': {
         colorClass: 'badge-long',
         kc: [5],
         bosses: ['FightCaves', 'Any Raid']
       }
     };
 
-    // WARME, CONTRASTERENDE KLEUREN VOOR HET RAD (AMBER, TEAL, EMERALD, GOLD, LEATHER)
     const wheelColors = [
       '#15803d', '#b45309', '#0369a1', '#6d28d9', 
       '#047857', '#c2410c', '#1d4ed8', '#a16207'
     ];
 
     // STATE
-    let currentTier = 'easy';
-    let currentItems = PVM_DATA.easy.bosses;
+    let wheelMode = 'tier'; // 'tier', 'boss', or 'kc'
+    let currentItems = TIERS;
+    let selectedTier = null;
     let selectedBoss = null;
     let selectedKC = null;
     let challenges = [];
     
-    // CANVAS & ANIMATION STATE
+    // CANVAS STATE
     const canvas = document.getElementById('wheelCanvas');
     const ctx = canvas.getContext('2d');
     let startAngle = 0;
@@ -454,17 +380,16 @@
     let spinTime = 0;
     let spinTimeTotal = 0;
     let isSpinning = false;
-    let wheelMode = 'boss';
 
     // DOM ELEMENTS
-    const tierSelect = document.getElementById('tierSelect');
+    const spinTierBtn = document.getElementById('spinTierBtn');
     const spinBossBtn = document.getElementById('spinBossBtn');
     const spinKcBtn = document.getElementById('spinKcBtn');
     const acceptBtn = document.getElementById('acceptBtn');
     const resultText = document.getElementById('resultText');
+    const modeTitle = document.getElementById('modeTitle');
     const challengeList = document.getElementById('challengeList');
 
-    // DRAW WHEEL
     function drawWheel() {
       const numOptions = currentItems.length;
       const arc = Math.PI * 2 / numOptions;
@@ -520,16 +445,24 @@
       const winningItem = currentItems[index];
       isSpinning = false;
 
-      if (wheelMode === 'boss') {
+      if (wheelMode === 'tier') {
+        selectedTier = winningItem;
+        modeTitle.innerText = "Step 2: Spin Boss";
+        resultText.innerText = `Tier Spun: ${selectedTier}! Now spin Boss.`;
+        spinTierBtn.disabled = true;
+        spinBossBtn.disabled = false;
+      } else if (wheelMode === 'boss') {
         selectedBoss = winningItem;
-        resultText.innerText = `${selectedBoss} (Now spin KC!)`;
-        spinKcBtn.disabled = false;
+        modeTitle.innerText = "Step 3: Spin KC";
+        resultText.innerText = `${selectedTier} -> ${selectedBoss}! Now spin KC.`;
         spinBossBtn.disabled = true;
-      } else {
+        spinKcBtn.disabled = false;
+      } else if (wheelMode === 'kc') {
         selectedKC = winningItem;
-        resultText.innerText = `${selectedKC}x ${selectedBoss}`;
-        acceptBtn.style.display = 'block';
+        modeTitle.innerText = "Challenge Ready!";
+        resultText.innerText = `${selectedKC}x ${selectedBoss} (${selectedTier})`;
         spinKcBtn.disabled = true;
+        acceptBtn.style.display = 'block';
       }
     }
 
@@ -544,13 +477,16 @@
       isSpinning = true;
       wheelMode = mode;
       
-      if (mode === 'boss') {
-        currentItems = PVM_DATA[currentTier].bosses;
+      if (mode === 'tier') {
+        currentItems = TIERS;
+        selectedTier = null;
         selectedBoss = null;
         selectedKC = null;
         acceptBtn.style.display = 'none';
-      } else {
-        currentItems = PVM_DATA[currentTier].kc;
+      } else if (mode === 'boss') {
+        currentItems = PVM_DATA[selectedTier].bosses;
+      } else if (mode === 'kc') {
+        currentItems = PVM_DATA[selectedTier].kc;
       }
 
       drawWheel();
@@ -560,20 +496,8 @@
       rotateWheel();
     }
 
-    // EVENT LISTENERS
-    tierSelect.addEventListener('change', (e) => {
-      if (isSpinning) return;
-      currentTier = e.target.value;
-      currentItems = PVM_DATA[currentTier].bosses;
-      selectedBoss = null;
-      selectedKC = null;
-      spinBossBtn.disabled = false;
-      spinKcBtn.disabled = true;
-      acceptBtn.style.display = 'none';
-      resultText.innerText = `Tier: ${PVM_DATA[currentTier].label}. Spin the Boss!`;
-      drawWheel();
-    });
-
+    // BUTTON EVENT LISTENERS
+    spinTierBtn.addEventListener('click', () => startSpin('tier'));
     spinBossBtn.addEventListener('click', () => startSpin('boss'));
     spinKcBtn.addEventListener('click', () => startSpin('kc'));
 
@@ -583,17 +507,21 @@
         return;
       }
       challenges.push({
-        tier: PVM_DATA[currentTier].label,
-        badgeClass: PVM_DATA[currentTier].colorClass,
+        tier: selectedTier,
+        badgeClass: PVM_DATA[selectedTier].colorClass,
         boss: selectedBoss,
         kc: selectedKC,
         status: 'In Progress'
       });
       renderChallenges();
       
-      spinBossBtn.disabled = false;
+      // Reset sequence back to Step 1
+      spinTierBtn.disabled = false;
       acceptBtn.style.display = 'none';
-      resultText.innerText = "Challenge added! Choose a tier to spin again.";
+      currentItems = TIERS;
+      modeTitle.innerText = "Step 1: Spin Tier";
+      resultText.innerText = "Challenge added! Spin Tier to start next challenge.";
+      drawWheel();
     });
 
     function renderChallenges() {
