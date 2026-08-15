@@ -1,1 +1,495 @@
 
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSRS PvM Random Race</title>
+  <style>
+    :root {
+      --bg-dark: #0f1115;
+      --card-bg: #1a1d24;
+      --accent: #ff9800;
+      --accent-hover: #e68a00;
+      --text: #ffffff;
+      --text-muted: #a0a6b5;
+      --border: #2e3440;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      color: var(--accent);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+    }
+
+    .main-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    /* WHEEL SECTION */
+    .wheel-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1 1 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    /* De Pijl boven het rad */
+    .pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 25px solid #e74c3c;
+      z-index: 10;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+
+    canvas {
+      border-radius: 50%;
+      border: 5px solid var(--border);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    select, button {
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    select {
+      background: #252932;
+      color: var(--text);
+      flex: 1;
+      cursor: pointer;
+    }
+
+    button {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      flex: 1;
+    }
+
+    button:hover { background: var(--accent-hover); }
+    button:active { transform: scale(0.98); }
+    button:disabled { background: #555; cursor: not-allowed; }
+
+    .result-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #252932;
+      border-radius: 8px;
+      width: 100%;
+      text-align: center;
+      border-left: 4px solid var(--accent);
+    }
+
+    .result-title { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; }
+    .result-value { font-size: 1.3rem; font-weight: bold; color: var(--text); margin-top: 5px; }
+
+    /* TRACKER SECTION */
+    .tracker-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+      flex: 1 1 450px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    .tracker-title {
+      font-size: 1.2rem;
+      color: var(--accent);
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .challenge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .challenge-card {
+      background: #252932;
+      border-radius: 8px;
+      padding: 12px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--border);
+    }
+
+    .challenge-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .challenge-num { font-size: 0.75rem; color: var(--accent); font-weight: bold; }
+    .challenge-text { font-size: 1rem; font-weight: bold; }
+    .badge {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #333;
+      color: #fff;
+      display: inline-block;
+      margin-top: 3px;
+      width: fit-content;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+    }
+
+    .btn-unique { background: #27ae60; color: white; }
+    .btn-unique:hover { background: #219653; }
+
+    .badge-easy { background: #27ae60; }
+    .badge-medium { background: #2980b9; }
+    .badge-hard { background: #d35400; }
+    .badge-insane { background: #c0392b; }
+    .badge-long { background: #8e44ad; }
+  </style>
+</head>
+<body>
+
+  <h1>OSRS PvM Random Race</h1>
+  <p class="subtitle">Spin het rad, voltooi 9 challenges of pak een Unique Drop!</p>
+
+  <div class="main-container">
+    
+    <!-- WHEEL SECTION -->
+    <div class="wheel-section">
+      <div class="controls">
+        <select id="tierSelect">
+          <option value="easy">Easy Tier</option>
+          <option value="medium">Medium Tier</option>
+          <option value="hard">Hard Tier</option>
+          <option value="insane">Insane Tier</option>
+          <option value="long">Long Tier</option>
+        </select>
+      </div>
+
+      <div class="wheel-wrapper">
+        <div class="pointer"></div>
+        <canvas id="wheelCanvas" width="320" height="320"></canvas>
+      </div>
+
+      <div class="controls">
+        <button id="spinBossBtn">Spin Boss</button>
+        <button id="spinKcBtn" disabled>Spin KC</button>
+      </div>
+
+      <div class="result-box">
+        <div class="result-title">Huidige Challenge</div>
+        <div class="result-value" id="resultText">Selecteer een tier & spin!</div>
+      </div>
+      
+      <button id="acceptBtn" style="margin-top: 15px; width: 100%; display: none;">Voeg toe aan Challenge Lijst</button>
+    </div>
+
+    <!-- TRACKER SECTION -->
+    <div class="tracker-section">
+      <div class="tracker-title">Team Progressie (9 Challenges)</div>
+      <div class="challenge-list" id="challengeList">
+        <!-- Dynamisch gevuld via JS -->
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // DATA CONFIGURATIE
+    const PVM_DATA = {
+      easy: {
+        label: 'Easy',
+        colorClass: 'badge-easy',
+        kc: [100, 200, 300, 400, 500, 600],
+        bosses: ['Kraken', 'Sire', 'Scurrius', 'DKings', 'Mole', 'Sarachnis', 'Moxy']
+      },
+      medium: {
+        label: 'Medium',
+        colorClass: 'badge-medium',
+        kc: [50, 100, 150, 200, 250, 300],
+        bosses: ['Vorkath', 'Duke', 'KQ', "K'ril", 'Titans']
+      },
+      hard: {
+        label: 'Hard',
+        colorClass: 'badge-hard',
+        kc: [25, 50, 75, 100, 125, 150],
+        bosses: ['Vardorvis', 'Muspah', 'Araxxor']
+      },
+      insane: {
+        label: 'Insane',
+        colorClass: 'badge-insane',
+        kc: [16, 32, 48, 64, 80, 96],
+        bosses: ['Corp', 'Nightmare', 'Gauntlet']
+      },
+      long: {
+        label: 'Long',
+        colorClass: 'badge-long',
+        kc: [5],
+        bosses: ['FightCaves', 'Any Raid']
+      }
+    };
+
+    const colors = ['#2c3e50', '#34495e', '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#d35400', '#c0392b'];
+
+    // STATE
+    let currentTier = 'easy';
+    let currentItems = PVM_DATA.easy.bosses;
+    let selectedBoss = null;
+    let selectedKC = null;
+    let challenges = [];
+    
+    // CANVAS & ANIMATIE STATE
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    let startAngle = 0;
+    let spinTimeout = null;
+    let spinAngleStart = 0;
+    let spinTime = 0;
+    let spinTimeTotal = 0;
+    let isSpinning = false;
+    let wheelMode = 'boss'; // 'boss' of 'kc'
+
+    // DOM ELEMENTS
+    const tierSelect = document.getElementById('tierSelect');
+    const spinBossBtn = document.getElementById('spinBossBtn');
+    const spinKcBtn = document.getElementById('spinKcBtn');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const resultText = document.getElementById('resultText');
+    const challengeList = document.getElementById('challengeList');
+
+    // SETUP RAD
+    function drawWheel() {
+      const numOptions = currentItems.length;
+      const arc = Math.PI * 2 / numOptions;
+      const outsideRadius = 150;
+      const textRadius = 105;
+      const insideRadius = 30;
+
+      ctx.clearRect(0,0,320,320);
+
+      for(let i = 0; i < numOptions; i++) {
+        const angle = startAngle + i * arc;
+        ctx.fillStyle = colors[i % colors.length];
+
+        ctx.beginPath();
+        ctx.arc(160, 160, outsideRadius, angle, angle + arc, false);
+        ctx.arc(160, 160, insideRadius, angle + arc, angle, true);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.save();
+        ctx.fillStyle = "white";
+        ctx.translate(160 + Math.cos(angle + arc / 2) * textRadius, 
+                      160 + Math.sin(angle + arc / 2) * textRadius);
+        ctx.rotate(angle + arc / 2 + Math.PI / 2);
+        const text = currentItems[i].toString();
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
+        ctx.restore();
+      }
+    }
+
+    function rotateWheel() {
+      spinTime += 30;
+      if(spinTime >= spinTimeTotal) {
+        stopRotateWheel();
+        return;
+      }
+      const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+      startAngle += (spinAngle * Math.PI / 180);
+      drawWheel();
+      spinTimeout = setTimeout(rotateWheel, 30);
+    }
+
+    function stopRotateWheel() {
+      clearTimeout(spinTimeout);
+      const numOptions = currentItems.length;
+      const degrees = startAngle * 180 / Math.PI + 90;
+      const arcd = 360 / numOptions;
+      const index = Math.floor((360 - degrees % 360) / arcd);
+      
+      const winningItem = currentItems[index];
+      isSpinning = false;
+
+      if(wheelMode === 'boss') {
+        selectedBoss = winningItem;
+        resultText.innerText = `${selectedBoss} (Nu KC spinnen!)`;
+        spinKcBtn.disabled = false;
+        spinBossBtn.disabled = true;
+      } else {
+        selectedKC = winningItem;
+        resultText.innerText = `${selectedKC}x ${selectedBoss}`;
+        acceptBtn.style.display = 'block';
+        spinKcBtn.disabled = true;
+      }
+    }
+
+    function easeOut(t, b, c, d) {
+      const ts = (t/=d)*t;
+      const tc = ts*t;
+      return b+c*(tc + -3*ts + 3*t);
+    }
+
+    function startSpin(mode) {
+      if(isSpinning) return;
+      isSpinning = true;
+      wheelMode = mode;
+      
+      if(mode === 'boss') {
+        currentItems = PVM_DATA[currentTier].bosses;
+        selectedBoss = null;
+        selectedKC = null;
+        acceptBtn.style.display = 'none';
+      } else {
+        currentItems = PVM_DATA[currentTier].kc;
+      }
+
+      drawWheel();
+      spinAngleStart = Math.random() * 10 + 10;
+      spinTime = 0;
+      spinTimeTotal = Math.random() * 3000 + 4000;
+      rotateWheel();
+    }
+
+    // EVENT LISTENERS
+    tierSelect.addEventListener('change', (e) => {
+      if(isSpinning) return;
+      currentTier = e.target.value;
+      currentItems = PVM_DATA[currentTier].bosses;
+      selectedBoss = null;
+      selectedKC = null;
+      spinBossBtn.disabled = false;
+      spinKcBtn.disabled = true;
+      acceptBtn.style.display = 'none';
+      resultText.innerText = `Tier: ${PVM_DATA[currentTier].label}. Spin de Boss!`;
+      drawWheel();
+    });
+
+    spinBossBtn.addEventListener('click', () => startSpin('boss'));
+    spinKcBtn.addEventListener('click', () => startSpin('kc'));
+
+    acceptBtn.addEventListener('click', () => {
+      if(challenges.length >= 9) {
+        alert('Alle 9 challenges zijn al toegevoegd!');
+        return;
+      }
+      challenges.push({
+        tier: PVM_DATA[currentTier].label,
+        badgeClass: PVM_DATA[currentTier].colorClass,
+        boss: selectedBoss,
+        kc: selectedKC,
+        status: 'In Progress'
+      });
+      renderChallenges();
+      
+      // Reset voor volgende spin
+      spinBossBtn.disabled = false;
+      acceptBtn.style.display = 'none';
+      resultText.innerText = "Challenge toegevoegd! Kies weer een tier.";
+    });
+
+    function renderChallenges() {
+      challengeList.innerHTML = '';
+      for(let i = 0; i < 9; i++) {
+        const item = challenges[i];
+        const card = document.createElement('div');
+        card.className = 'challenge-card';
+
+        if(item) {
+          card.innerHTML = `
+            <div class="challenge-info">
+              <span class="challenge-num">CHALLENGE #${i+1}</span>
+              <span class="challenge-text">${item.kc}x ${item.boss}</span>
+              <span class="badge ${item.badgeClass}">${item.tier} - ${item.status}</span>
+            </div>
+            <div class="action-btns">
+              ${item.status === 'In Progress' ? `<button class="btn-sm btn-unique" onclick="completeChallenge(${i})">Unique Drop! 🎉</button>` : ''}
+            </div>
+          `;
+        } else {
+          card.innerHTML = `
+            <div class="challenge-info">
+              <span class="challenge-num">CHALLENGE #${i+1}</span>
+              <span class="challenge-text" style="color: var(--text-muted); font-weight: normal;">Nog niet gedraaid...</span>
+            </div>
+          `;
+        }
+        challengeList.appendChild(card);
+      }
+    }
+
+    window.completeChallenge = function(index) {
+      challenges[index].status = 'VOLTOOID! 🏆';
+      renderChallenges();
+    };
+
+    // INIT
+    drawWheel();
+    renderChallenges();
+  </script>
+</body>
+</html>
